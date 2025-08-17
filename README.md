@@ -193,7 +193,3 @@ Dự án demo cho mục đích học tập.
 3. Commit changes
 4. Push to branch
 5. Tạo Pull Request
-
-## 📞 Liên hệ
-
-Nếu có vấn đề hoặc câu hỏi, vui lòng tạo issue trong repository.
