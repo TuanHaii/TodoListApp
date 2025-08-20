@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users") // Đổi thành "users" để nhất quán
+@Table(name = "users")
 public class User {
 
     @Id

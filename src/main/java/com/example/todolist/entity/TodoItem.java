@@ -9,7 +9,7 @@ import lombok.*; // Import tất cả annotation của Lombok để tự động
 @Setter // Lombok tự động tạo các phương thức setter cho tất cả thuộc tính
 @NoArgsConstructor // Lombok tự động tạo constructor không có tham số
 @AllArgsConstructor // Lombok tự động tạo constructor với tất cả tham số
-@Table(name = "todo_items") // Chỉ định tên bảng trong database là "todo_items"
+@Table(name = "todo_items") // Sửa thành "todo_item" để khớp với bảng có sẵn
 public class TodoItem { // Khai báo class TodoItem đại diện cho một nhiệm vụ trong danh sách todo
 
     @Id // Đánh dấu thuộc tính này là khóa chính (primary key)
@@ -17,9 +17,8 @@ public class TodoItem { // Khai báo class TodoItem đại diện cho một nhi�
     private Long id; // Thuộc tính ID kiểu Long, định danh duy nhất cho mỗi todo item
 
     private String title; // Tiêu đề của todo item
-    private String description; // Mô tả chi tiết của todo item
     private boolean completed; // Trạng thái hoàn thành của todo item (true = đã hoàn thành, false = chưa hoàn thành)
-
+    String description; // Mô tả chi tiết về todo item
     @ManyToOne // Quan hệ nhiều-một: nhiều todo items có thể thuộc về một user
     @JoinColumn(name = "user_id") // Chỉ định cột foreign key trong bảng todo_items để liên kết với bảng users
     private User user; // Thuộc tính user - chủ sở hữu của todo item
