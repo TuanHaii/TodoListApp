@@ -1,0 +1,455 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789012",
+		"name": "TodoList API Tests",
+		"description": "Collection test cho TodoList API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains success message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Todo API is running!\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/todos/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Todos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response is an array\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Each todo has required fields\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    if (responseJson.length > 0) {",
+							"        const todo = responseJson[0];",
+							"        pm.expect(todo).to.have.property('id');",
+							"        pm.expect(todo).to.have.property('title');",
+							"        pm.expect(todo).to.have.property('description');",
+							"        pm.expect(todo).to.have.property('completed');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/todos",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Todo by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 404\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+							"});",
+							"",
+							"if (pm.response.code === 200) {",
+							"    pm.test(\"Todo has required fields\", function () {",
+							"        const responseJson = pm.response.json();",
+							"        pm.expect(responseJson).to.have.property('id');",
+							"        pm.expect(responseJson).to.have.property('title');",
+							"        pm.expect(responseJson).to.have.property('description');",
+							"        pm.expect(responseJson).to.have.property('completed');",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/todos/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo - Full Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Todo created successfully\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property('id');",
+							"    pm.expect(responseJson).to.have.property('title');",
+							"    pm.expect(responseJson.title).to.eql('Test từ Postman');",
+							"    pm.expect(responseJson.completed).to.eql(false);",
+							"});",
+							"",
+							"// Lưu ID của todo vừa tạo để sử dụng cho test khác",
+							"if (pm.response.code === 200) {",
+							"    const responseJson = pm.response.json();",
+							"    pm.environment.set('created_todo_id', responseJson.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Test từ Postman\",\n    \"description\": \"Đây là todo được tạo từ Postman để test API\",\n    \"completed\": false,\n    \"category\": \"Work\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/todos?username=testuser",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "testuser"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo - Simple",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Simple todo created successfully\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property('id');",
+							"    pm.expect(responseJson).to.have.property('title');",
+							"    pm.expect(responseJson.title).to.include('Nhiệm vụ đơn giản');",
+							"    pm.expect(responseJson.completed).to.eql(false);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/todos/simple?title=Nhiệm vụ đơn giản từ Postman&username=testuser",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos",
+						"simple"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "Nhiệm vụ đơn giản từ Postman"
+						},
+						{
+							"key": "username",
+							"value": "testuser"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo - Different User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Todo created for admin user\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property('username');",
+							"    pm.expect(responseJson.username).to.eql('admin');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Công việc của Admin\",\n    \"description\": \"Quản lý hệ thống\",\n    \"completed\": false,\n    \"category\": \"Personal\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/todos?username=admin",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "admin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo - Invalid User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 for invalid user\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Todo với user không tồn tại\",\n    \"description\": \"Đây sẽ thất bại\",\n    \"completed\": false\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/todos?username=invaliduser",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "invaliduser"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo - Invalid Category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 for invalid category\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Todo với category không tồn tại\",\n    \"description\": \"Đây sẽ thất bại vì category không có\",\n    \"completed\": false,\n    \"category\": \"InvalidCategory\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/todos?username=testuser",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "testuser"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Created Todo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Retrieved todo matches created todo\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property('id');",
+							"    pm.expect(responseJson.title).to.eql('Test từ Postman');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/todos/{{created_todo_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"todos",
+						"{{created_todo_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
+
