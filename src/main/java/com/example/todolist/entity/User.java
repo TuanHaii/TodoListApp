@@ -32,6 +32,9 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt; // Thời gian tạo user
 
+    @Column(name = "role")
+    private String role = "USER"; // Vai trò của user (mặc định là USER)
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TodoItem> todoItems; // Danh sách todo items thuộc user này
 }

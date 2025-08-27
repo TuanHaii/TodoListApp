@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository // Annotation đánh dấu đây là repository component
-public interface TodoCategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     // Tìm category theo tên (case insensitive)
     Optional<Category> findByNameIgnoreCase(String name);

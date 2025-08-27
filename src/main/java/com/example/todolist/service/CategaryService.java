@@ -1,8 +1,8 @@
 package com.example.todolist.service;
 
 import com.example.todolist.entity.Category;
-import com.example.todolist.model.TodoCategoryDTO;
-import com.example.todolist.repository.TodoCategoryRepository;
+import com.example.todolist.model.CategoryDTO;
+import com.example.todolist.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,36 +10,36 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TodoCategaryService {
-    private final TodoCategoryRepository todoCategoryRepository;
+public class CategaryService {
+    private final CategoryRepository todoCategoryRepository;
 
-    public TodoCategaryService(TodoCategoryRepository todoCategoryRepository) {
+    public CategaryService(CategoryRepository todoCategoryRepository) {
         this.todoCategoryRepository = todoCategoryRepository;
     }
 
     // Lấy tất cả categories
-    public List<TodoCategoryDTO> getAllCategories() {
+    public List<CategoryDTO> getAllCategories() {
         return todoCategoryRepository.findAll().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     // Lấy category theo ID
-    public TodoCategoryDTO getCategoryById(Long id) {
+    public CategoryDTO getCategoryById(Long id) {
         return todoCategoryRepository.findById(id)
                 .map(this::mapToDTO)
                 .orElse(null);
     }
 
     // Tìm category theo tên
-    public TodoCategoryDTO getCategoryByName(String name) {
+    public CategoryDTO getCategoryByName(String name) {
         return todoCategoryRepository.findByNameIgnoreCase(name)
                 .map(this::mapToDTO)
                 .orElse(null);
     }
 
     // Tạo mới category
-    public TodoCategoryDTO createCategory(TodoCategoryDTO categoryDTO) {
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         // Kiểm tra xem category đã tồn tại chưa
         if (todoCategoryRepository.existsByNameIgnoreCase(categoryDTO.getName())) {
             throw new RuntimeException("Category với tên '" + categoryDTO.getName() + "' đã tồn tại");
@@ -51,7 +51,7 @@ public class TodoCategaryService {
     }
 
     // Cập nhật category
-    public TodoCategoryDTO updateCategory(Long id, TodoCategoryDTO categoryDTO) {
+    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category existingCategory = todoCategoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category không tồn tại với ID: " + id));
 
@@ -85,21 +85,21 @@ public class TodoCategaryService {
     }
 
     // Lấy categories được sử dụng bởi user
-    public List<TodoCategoryDTO> getCategoriesByUserId(Long userId) {
+    public List<CategoryDTO> getCategoriesByUserId(Long userId) {
         return todoCategoryRepository.findCategoriesByUserId(userId).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     // Tìm kiếm categories theo keyword
-    public List<TodoCategoryDTO> searchCategories(String keyword) {
+    public List<CategoryDTO> searchCategories(String keyword) {
         return todoCategoryRepository.findByKeyword(keyword).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     // Lấy categories trống (không có todo items)
-    public List<TodoCategoryDTO> getEmptyCategories() {
+    public List<CategoryDTO> getEmptyCategories() {
         return todoCategoryRepository.findEmptyCategories().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
@@ -111,12 +111,12 @@ public class TodoCategaryService {
     }
 
     // Method chuyển đổi từ Category entity sang TodoCategoryDTO
-    private TodoCategoryDTO mapToDTO(Category category) {
+    private CategoryDTO mapToDTO(Category category) {
         if (category == null) {
             return null;
         }
 
-        TodoCategoryDTO dto = new TodoCategoryDTO();
+        CategoryDTO dto = new CategoryDTO();
         dto.setId(category.getId());
         dto.setName(category.getName());
         dto.setDescription(category.getDescription());
@@ -127,7 +127,7 @@ public class TodoCategaryService {
     }
 
     // Method chuyển đổi từ TodoCategoryDTO sang Category entity
-    private Category mapToEntity(TodoCategoryDTO dto) {
+    private Category mapToEntity(CategoryDTO dto) {
         if (dto == null) {
             return null;
         }

@@ -1,9 +1,13 @@
 // rest api cho controller
 package com.example.todolist.controller;
 
+import com.example.todolist.entity.TodoItem;
 import com.example.todolist.model.TodoItemDTO;
+import com.example.todolist.repository.TodoItemRepository;
 import com.example.todolist.service.TodoItemService;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,15 +16,33 @@ import java.util.List;
 @RequestMapping("/api/todos")
 @CrossOrigin(origins = "*") // Cho phép CORS để test từ Postman
 public class TodoController {
-
     private final TodoItemService todoItemService;
+    private final TodoItemRepository todoItemRepository;
 
-    public TodoController(TodoItemService todoItemService) {
+    public TodoController(TodoItemService todoItemService,
+                          TodoItemRepository todoItemRepository) {
         this.todoItemService = todoItemService;
+        this.todoItemRepository = todoItemRepository;
     }
 
-    // GET /api/todos - Lấy tất cả todo items
+    // Lấy todos của user hiện tại - Tạm thời bỏ @PreAuthorize để test
     @GetMapping
+    // @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<TodoItemDTO>> getTodos(@RequestParam(required = false) String username){
+        if (username != null) {
+            // Nếu có username thì lấy theo username đó
+            List<TodoItemDTO> result = todoItemService.findByUsername(username);
+            return ResponseEntity.ok(result);
+        } else {
+            // Nếu không có username thì lấy tất cả
+            List<TodoItemDTO> result = todoItemService.getAllTodoItems();
+            return ResponseEntity.ok(result);
+        }
+    }
+
+    // GET /api/todos/all - Lấy tất cả todo items - Tạm thời bỏ @PreAuthorize để test
+    @GetMapping("/all")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TodoItemDTO>> getAllTodos() {
         List<TodoItemDTO> todos = todoItemService.getAllTodoItems();
         return ResponseEntity.ok(todos);

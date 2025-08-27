@@ -5,8 +5,8 @@ import com.example.todolist.entity.User;
 import com.example.todolist.entity.Category;
 import com.example.todolist.model.TodoItemDTO;
 import com.example.todolist.repository.TodoItemRepository;
-import com.example.todolist.repository.TodoUserRepository;
-import com.example.todolist.repository.TodoCategoryRepository;
+import com.example.todolist.repository.UserRepository;
+import com.example.todolist.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,15 +15,22 @@ import java.util.stream.Collectors;
 @Service
 public class TodoItemService {
     private final TodoItemRepository todoItemRepository;
-    private final TodoUserRepository todoUserRepository;
-    private final TodoCategoryRepository todoCategoryRepository;
+    private final UserRepository todoUserRepository;
+    private final CategoryRepository todoCategoryRepository;
 
     public TodoItemService(TodoItemRepository todoItemRepository,
-                          TodoUserRepository todoUserRepository,
-                          TodoCategoryRepository todoCategoryRepository) {
+                          UserRepository todoUserRepository,
+                          CategoryRepository todoCategoryRepository) {
         this.todoItemRepository = todoItemRepository;
         this.todoUserRepository = todoUserRepository;
         this.todoCategoryRepository = todoCategoryRepository;
+    }
+
+    // Lấy tất cả todo items
+    public List<TodoItemDTO> findByUsername(String username) {
+        return todoItemRepository.findByUsername(username).stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     public List<TodoItemDTO> getAllTodoItems() {
