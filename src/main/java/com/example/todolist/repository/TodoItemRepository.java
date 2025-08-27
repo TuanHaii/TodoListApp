@@ -14,6 +14,8 @@ public interface TodoItemRepository extends JpaRepository <TodoItem, Long> {
 
     // Tìm tất cả todo items của một user
     List<TodoItem> findByUser(User user);
+    @Query("SELECT t FROM TodoItem t WHERE t.user.username = :username")
+    List<TodoItem> findByUsername(@Param("username") String username);
 
     // Tìm tất cả todo items của một user theo user ID
     List<TodoItem> findByUserId(Long userId);

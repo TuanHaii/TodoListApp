@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query; // Import cho @Query annot
 import org.springframework.data.repository.query.Param; // Import cho @Param annotation
 import java.util.Optional; // Import cho Optional type
 
-public interface TodoUserRepository extends JpaRepository<User, Long>{
+public interface UserRepository extends JpaRepository<User, Long>{
     // Tìm user theo username - Spring Data JPA tự động implement
     Optional<User> findByUsername(String username);
 

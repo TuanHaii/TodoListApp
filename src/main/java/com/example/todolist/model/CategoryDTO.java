@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Setter    @Getter
 @NoArgsConstructor @AllArgsConstructor
-public class TodoCategoryDTO {
+public class CategoryDTO {
     private Long id;
     private String name;
     private String description;

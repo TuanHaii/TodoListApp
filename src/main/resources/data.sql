@@ -1,18 +1,13 @@
--- Xóa dữ liệu cũ để tránh xung đột
-DELETE FROM todo_items;
-DELETE FROM categories;
-DELETE FROM users;
-
 -- Reset AUTO_INCREMENT
 ALTER TABLE users AUTO_INCREMENT = 1;
 ALTER TABLE categories AUTO_INCREMENT = 1;
 ALTER TABLE todo_items AUTO_INCREMENT = 1;
-
+ALTER TABLE users ADD COLUMN role VARCHAR(50) DEFAULT 'USER';
 -- Tạo dữ liệu mẫu cho users (sử dụng tên bảng "users" và bao gồm full_name và created_at)
-INSERT INTO users (id, username, email, password, full_name, created_at) VALUES
-(1, 'testuser', 'test@example.com', 'password123', 'Test User', '2025-08-20 10:00:00'),
-(2, 'admin', 'admin@example.com', 'admin123', 'Administrator', '2025-08-20 10:00:00'),
-(3, 'john', 'john@example.com', 'john123', 'John Doe', '2025-08-20 10:00:00');
+INSERT INTO users (id, username, email, password, full_name, created_at, role) VALUES
+(1, 'testuser', 'test@example.com', 'password123', 'Test User', '2025-08-20 10:00:00', 'USER'),
+(2, 'admin', 'admin@example.com', 'admin123', 'Administrator', '2025-08-20 10:00:00', 'ADMIN'),
+(3, 'john', 'john@example.com', 'john123', 'John Doe', '2025-08-20 10:00:00', 'USER');
 
 -- Tạo dữ liệu mẫu cho categories (sử dụng tên bảng số nhiều và bao gồm created_at)
 INSERT INTO categories (id, name, description, color, created_at) VALUES
